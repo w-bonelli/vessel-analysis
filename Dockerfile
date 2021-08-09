@@ -23,3 +23,5 @@ RUN apt-get update && \
 RUN python3.8 -m pip install --upgrade pip && \
     python3.8 -m pip install -r /opt/code/requirements.txt
 
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8

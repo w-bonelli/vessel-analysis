@@ -8,9 +8,15 @@ Author: Suxing Liu (adapted by Wes Bonelli)
 
 ## Requirements & Installation
 
-Either [Docker](https://www.docker.com/) or [Singularity ](https://sylabs.io/singularity/) is required to run this project in a Unix environment. First, clone the project with `git clone https://github.com/w-bonelli/vessel-analysis.git`.
+The easiest way to run this project in a Unix environment is with [Docker](https://www.docker.com/) or [Singularity ](https://sylabs.io/singularity/).
 
 ## Usage
+
+To explore the `vessel-detector` image, open a shell inside it:
+
+```shell
+docker run -it -v "$(pwd)":/opt/vessel-detector -w /opt/vessel-detector wbonelli/vessel-detector bash
+```
 
 A good way to get started is to run the tests:
 
@@ -18,20 +24,24 @@ A good way to get started is to run the tests:
 docker run -it -v "$(pwd)":/opt/dev -w /opt/dev wbonelli/vessel-detector python3 -m pytest -s
 ```
 
-### Docker
+#### Docker
 
 To run with Docker, use a command like:
 
 ```shell
-docker run -t -v "$(pwd)":/opt/vessel-detector -w /opt/vessel-detector wbonelli/vessel-detector python3 vessels.py <input file> -o <output directory>
+docker run -it -v "$(pwd)":/opt/vessel-detector -w /opt/vessel-detector wbonelli/vessel-detector python3 vd.py detect <input file> -o <output directory> -mr <minimum vessel radius> -ft <filetypes, comma-separated>
 ```
 
-### Singularity
+#### Singularity
+
+To use Singularity:
 
 To use Singularity:
 
 ```bash
-singularity exec docker://wbonelli/vessel-detector python3 vessels.py <input file> -o <output directory> -r 15 -c 500
+singularity exec docker://wbonelli/vessel-detector python3 vd.py detect <input file> -o <output directory> -mr <minimum vessel radius> -ft <filetypes, comma-separated>
 ```
 
-The `.czi` file format is also supported.
+### Supported filetypes
+
+By default, JPG, PNG, and CZI files are supported. To limit the analysis to certain filetypes, use the `-ft` flag (a comma-separated for multiple), for instance: `-ft png,czi`.

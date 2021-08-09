@@ -21,3 +21,7 @@ data
 output*
 *.DS_Store
 .coverage
+tests/scratch
+tests/output
+tests/output*
+tests/__pycache__
