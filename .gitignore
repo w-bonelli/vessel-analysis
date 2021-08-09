@@ -16,6 +16,7 @@ tools/__pycache__/
 tests/output
 tests/__pycache__/
 tests/scratch
+tests/data
 data
 output*
 *.DS_Store
