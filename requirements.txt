@@ -5,10 +5,10 @@ matplotlib==3.3.3
 Pillow==8.1.0
 numpy==1.19.2
 scipy==1.5.2
-scikit-image
+scikit-image==0.18.2
 scikit-build==0.11.1
 scikit-learn==0.24.0
-opencv-python==4.4.0.46
+opencv-python==3.4.15.55
 seaborn==0.11.1
 imutils==0.5.3
 openpyxl==3.0.5
@@ -21,3 +21,6 @@ pytest==6.2.1
 coverage==5.3.1
 coveralls==2.2.0
 czifile==2019.7.2
+skan==0.9
+numba==0.53.1
+plantcv==3.13
