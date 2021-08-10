@@ -6,7 +6,7 @@ from pathlib import Path
 
 import click
 
-from methods import original, alt1
+import methods
 from options import VesselDetectorOptions
 
 
@@ -27,18 +27,20 @@ def detect(source, output_directory, min_radius, file_types):
     if 'jpg' in parsed_file_types:
         parsed_file_types.append('jpeg')
     if len(parsed_file_types) == 0:
-        raise ValueError(f"You must specify file types!")
+        raise ValueError(f"You must specify at least one file type")
 
-    if Path(source).is_file():  # if input is a file, just process it
+    if Path(source).is_file():  # if input is a file, process it
         options = VesselDetectorOptions(
             input_file=source,
             output_directory=output_directory,
             min_radius=min_radius)
+
         print(f"Searching for vessels with minimum radius {min_radius}px in: {source}")
-        original(options)
+        methods.original(options)
+
         # print(f"Searching for vessels with minimum radius {min_radius}px (alternative method) in: {source}")
         # alt1(options)
-    elif Path(source).is_dir():  # if input is a directory, use as many cores as the host can spare
+    elif Path(source).is_dir():  # if input is a directory, use multiple cores if available
         sources = sum((sorted(glob(join(source, f"*.{file_type}"))) for file_type in parsed_file_types), [])
         sources_str = '\n'.join(sources)
         processes = cpu_count()
@@ -49,7 +51,7 @@ def detect(source, output_directory, min_radius, file_types):
 
         print(f"Using {processes} processes to search {len(sources)} files for vessels (Suxing's method):\n{sources_str}")
         with closing(Pool(processes=processes)) as pool:
-            pool.map(original, options)
+            pool.map(methods.original, options)
             pool.terminate()
 
         # print(f"Using {processes} processes to search {len(sources)} files for vessels (alternative 1):\n{sources_str}")

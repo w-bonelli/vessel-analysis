@@ -3,6 +3,7 @@ from typing import List
 
 import cv2
 import numpy as np
+from plantcv import plantcv as pcv
 
 from options import VesselDetectorOptions
 from results import VesselDetectorResult

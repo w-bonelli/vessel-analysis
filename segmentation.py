@@ -6,12 +6,14 @@ import cv2
 import imutils
 import matplotlib.pyplot as plt
 import numpy as np
+import skimage
 from scipy import ndimage
 from scipy.interpolate import interp1d
 from skimage.feature import peak_local_max
 from skimage.morphology import watershed
 from sklearn.cluster import KMeans
 from sklearn.cluster import MiniBatchKMeans
+from plantcv import plantcv as pcv
 
 from results import VesselDetectorResult
 from tools import utils
@@ -201,7 +203,7 @@ def find_vessels(orig, labels, grayscale=False, min_radius=15):
 
         # detect contours in the mask and grab the largest one
         # cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
-        contours, hierarchy = cv2.findContours(mask.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        contours_image, contours, hierarchy = cv2.findContours(mask.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         c = max(contours, key=cv2.contourArea)
 
         # draw a circle enclosing the object
@@ -233,13 +235,26 @@ def find_vessels(orig, labels, grayscale=False, min_radius=15):
             label_trait = cv2.putText(orig, "#{}".format(label), (int(x) - 10, int(y)), cv2.FONT_HERSHEY_SIMPLEX, 1,
                                       (0, 0, 255), 2)
 
-            result = VesselDetectorResult(
+            results.append(VesselDetectorResult(
                 id=str(count),
                 area=area,
                 solidity=min(round(area / rect_area, 4), 1),
                 max_height=h,
-                max_width=w)
-            results.append(result)
+                max_width=w))
+
+            # find objects (PlantCV)
+            id_objects, obj_hierarchy = pcv.find_objects(img=mask.copy(), mask=mask.copy())
+            roi1, roi_hierarchy = pcv.roi.rectangle(img=mask.copy(), x=x, y=y, h=h, w=w)
+            roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(img=mask.copy(), roi_contour=roi1,
+                                                                           roi_hierarchy=roi_hierarchy,
+                                                                           object_contour=id_objects,
+                                                                           obj_hierarchy=obj_hierarchy,
+                                                                           roi_type='partial')
+            obj, mask = pcv.object_composition(img=mask.copy(), contours=roi_objects, hierarchy=hierarchy3)
+            analysis_image = pcv.analyze_object(img=mask.copy(), obj=obj, mask=mask, label="default")
+            # TODO grab results and write to 1 output file
+            # pcv.outputs.save_results(filename=f"analysis.{index}.csv", outformat='csv')
+            # cv2.imwrite(f"analysis.{index}.png", skimage.img_as_uint(analysis_image))
         else:
             # optional to "delete" the small contours
             label_trait = cv2.drawContours(orig, [c], -1, (0, 0, 255), 2)
