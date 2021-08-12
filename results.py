@@ -6,11 +6,13 @@ class VesselDetectorResult:
             self,
             name: str,
             area: float = None,
-            center_of_mass: str = None,
+            center_of_mass_x: float = None,
+            center_of_mass_y: float = None,
             convex_hull_area: float = None,
             convex_hull_vertices: int = None,
             ellipse_angle: float = None,
-            ellipse_center: str = None,
+            ellipse_center_x: float = None,
+            ellipse_center_y: float = None,
             ellipse_eccentricity: float = None,
             ellipse_major_axis: float = None,
             ellipse_minor_axis: float = None,
@@ -24,11 +26,13 @@ class VesselDetectorResult:
             solidity: float = None):
         self.name = name
         self.area = area
-        self.center_of_mass = center_of_mass
+        self.center_of_mass_x = center_of_mass_x
+        self.center_of_mass_y = center_of_mass_y
         self.convex_hull_area = convex_hull_area
         self.convex_hull_vertices = convex_hull_vertices
         self.ellipse_angle = ellipse_angle
-        self.ellipse_center = ellipse_center
+        self.ellipse_center_x = ellipse_center_x
+        self.ellipse_center_y = ellipse_center_y
         self.ellipse_eccentricity = ellipse_eccentricity
         self.ellipse_major_axis = ellipse_major_axis
         self.ellipse_minor_axis = ellipse_minor_axis

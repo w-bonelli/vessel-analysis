@@ -19,6 +19,44 @@ def write_results(results: List[VesselDetectorResult], options: VesselDetectorOp
     print(f"Writing CSV file: {csv_path}")
     with open(csv_path, 'w') as file:
         writer = csv.writer(file, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        writer.writerow(['Name', 'Area', 'Center of Mass', 'Convex Hull Area', 'Convex Hull Vertices', 'Ellipse Angle', 'Ellipse Center', 'Ellipse Eccentricity', 'Ellipse Major Axis', 'Ellipse Minor Axis', 'Width', 'Height', 'Max Width', 'Max Height', 'In Bounds', 'Longest Path', 'Perimeter', 'Solidity'])
+        writer.writerow(['Name',
+                         'Area',
+                         'Center of Mass X',
+                         'Center of Mass Y',
+                         'Convex Hull Area',
+                         'Convex Hull Vertices',
+                         'Ellipse Angle',
+                         'Ellipse Center X',
+                         'Ellipse Center Y',
+                         'Ellipse Eccentricity',
+                         'Ellipse Major Axis',
+                         'Ellipse Minor Axis',
+                         'Width',
+                         'Height',
+                         'Max Width',
+                         'Max Height',
+                         'In Bounds',
+                         'Longest Path',
+                         'Perimeter',
+                         'Solidity'])
         for result in results:
-            writer.writerow([result.name, result.area, result.center_of_mass, result.convex_hull_area, result.convex_hull_vertices, result.ellipse_angle, result.ellipse_center, result.ellipse_eccentricity, result.ellipse_major_axis, result.ellipse_minor_axis, result.width, result.height, result.max_width, result.max_height, result.in_bounds, result.longest_path, result.perimeter, result.solidity,])
+            writer.writerow([result.name,
+                             result.area,
+                             result.center_of_mass_x,
+                             result.center_of_mass_y,
+                             result.convex_hull_area,
+                             result.convex_hull_vertices,
+                             result.ellipse_angle,
+                             result.ellipse_center_x,
+                             result.ellipse_center_y,
+                             result.ellipse_eccentricity,
+                             result.ellipse_major_axis,
+                             result.ellipse_minor_axis,
+                             result.width,
+                             result.height,
+                             result.max_width,
+                             result.max_height,
+                             result.in_bounds,
+                             result.longest_path,
+                             result.perimeter,
+                             result.solidity])

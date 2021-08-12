@@ -2,44 +2,45 @@
 
 ![CI](https://github.com/w-bonelli/vessel-detector/workflows/CI/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/w-bonelli/vessel-detector/badge.svg?branch=master)](https://coveralls.io/github/w-bonelli/vessel-detector?branch=master)
 
-Detects injection-filled and empty vessels in stem tissues.
+Detect injection-filled and empty vessels in stem tissues.
 
-Author: Suxing Liu (adapted by Wes Bonelli)
+## Acknowledgements
 
-## Requirements & Installation
 
-The easiest way to run this project in a Unix environment is with [Docker](https://www.docker.com/) or [Singularity ](https://sylabs.io/singularity/).
+General approach inspired by Suxing Liu, in particular [Smart Plant Growth Top-Down Traits](https://github.com/Computational-Plant-Science/spg).
+
+[PlantCV](https://github.com/danforthcenter/plantcv) also used to analyze each vessel's shape.
+
+## Requirements
+
+[Docker](https://www.docker.com/) is required to run this project in a Unix environment.
+
+## Installation
+
+To install from source, clone the project with `git clone https://github.com/w-bonelli/vessel-detecetor.git`, then build the image from the root directory with `docker build -t <your tag> -f Dockerfile .`.
+
+Alternatively, you can just pull the pre-built image with `docker pull wbonelli/vessel-detector`, or allow it to be pulled automatically from another Docker CLI command (as below).
 
 ## Usage
 
-To explore the `vessel-detector` image, open a shell inside it:
+To analyze an image:
 
 ```shell
-docker run -it -v "$(pwd)":/opt/vessel-detector -w /opt/vessel-detector wbonelli/vessel-detector bash
+docker run wbonelli/vessel-detector python3.8 /opt/code/vd.py detect <input file>
+```
+
+## Development
+
+To set up a development environment and explore or modify the source, just mount the project root as your container's working directory, for instance:
+
+```bash
+docker run -it -v $(pwd):/opt/dev -w /opt/dev wbonelli/vessel-detector bash
 ```
 
 A good way to get started is to run the tests:
 
 ```shell
-docker run -it -v "$(pwd)":/opt/dev -w /opt/dev wbonelli/vessel-detector python3 -m pytest -s
-```
-
-#### Docker
-
-To run with Docker, use a command like:
-
-```shell
-docker run -it -v "$(pwd)":/opt/vessel-detector -w /opt/vessel-detector wbonelli/vessel-detector python3 vd.py detect <input file> -o <output directory> -mr <minimum vessel radius> -ft <filetypes, comma-separated>
-```
-
-#### Singularity
-
-To use Singularity:
-
-To use Singularity:
-
-```bash
-singularity exec docker://wbonelli/vessel-detector python3 vd.py detect <input file> -o <output directory> -mr <minimum vessel radius> -ft <filetypes, comma-separated>
+docker run -it -v $(pwd):/opt/dev -w /opt/dev wbonelli/vessel-detector python3 -m pytest -s
 ```
 
 ### Supported filetypes
