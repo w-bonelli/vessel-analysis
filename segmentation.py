@@ -1,6 +1,7 @@
 import math
 import warnings
 from collections import Counter
+import pprint
 
 import cv2
 import imutils
@@ -235,13 +236,6 @@ def find_vessels(orig, labels, grayscale=False, min_radius=15):
             label_trait = cv2.putText(orig, "#{}".format(label), (int(x) - 10, int(y)), cv2.FONT_HERSHEY_SIMPLEX, 1,
                                       (0, 0, 255), 2)
 
-            results.append(VesselDetectorResult(
-                id=str(count),
-                area=area,
-                solidity=min(round(area / rect_area, 4), 1),
-                max_height=h,
-                max_width=w))
-
             # find objects (PlantCV)
             id_objects, obj_hierarchy = pcv.find_objects(img=mask.copy(), mask=mask.copy())
             roi1, roi_hierarchy = pcv.roi.rectangle(img=mask.copy(), x=x, y=y, h=h, w=w)
@@ -252,9 +246,29 @@ def find_vessels(orig, labels, grayscale=False, min_radius=15):
                                                                            roi_type='partial')
             obj, mask = pcv.object_composition(img=mask.copy(), contours=roi_objects, hierarchy=hierarchy3)
             analysis_image = pcv.analyze_object(img=mask.copy(), obj=obj, mask=mask, label="default")
-            # TODO grab results and write to 1 output file
-            # pcv.outputs.save_results(filename=f"analysis.{index}.csv", outformat='csv')
-            # cv2.imwrite(f"analysis.{index}.png", skimage.img_as_uint(analysis_image))
+
+            center_of_mass = pcv.outputs.observations['default']['center_of_mass']['value']
+            ellipse_center = pcv.outputs.observations['default']['ellipse_center']['value']
+
+            results.append(VesselDetectorResult(
+                name=str(count),
+                area=area,
+                center_of_mass=f"{center_of_mass[0]}, {center_of_mass[1]}",
+                convex_hull_area=pcv.outputs.observations['default']['convex_hull_area']['value'],
+                convex_hull_vertices=pcv.outputs.observations['default']['convex_hull_vertices']['value'],
+                ellipse_angle=pcv.outputs.observations['default']['ellipse_angle']['value'],
+                ellipse_center=f"{ellipse_center[0]}, {ellipse_center[1]}",
+                ellipse_eccentricity=pcv.outputs.observations['default']['ellipse_eccentricity']['value'],
+                ellipse_major_axis=pcv.outputs.observations['default']['ellipse_major_axis']['value'],
+                ellipse_minor_axis=pcv.outputs.observations['default']['ellipse_minor_axis']['value'],
+                height=pcv.outputs.observations['default']['height']['value'],
+                width=pcv.outputs.observations['default']['width']['value'],
+                max_height=h,
+                max_width=w,
+                in_bounds=pcv.outputs.observations['default']['in_bounds']['value'],
+                longest_path=pcv.outputs.observations['default']['longest_path']['value'],
+                perimeter=pcv.outputs.observations['default']['perimeter']['value'],
+                solidity=min(round(area / rect_area, 4), 1),))
         else:
             # optional to "delete" the small contours
             label_trait = cv2.drawContours(orig, [c], -1, (0, 0, 255), 2)

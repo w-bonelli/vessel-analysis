@@ -1,9 +1,7 @@
 import csv
-from os.path import isfile
 from typing import List
 
 import yaml
-from openpyxl import load_workbook, Workbook
 
 from options import VesselDetectorOptions
 from results import VesselDetectorResult
@@ -21,20 +19,6 @@ def write_results(results: List[VesselDetectorResult], options: VesselDetectorOp
     print(f"Writing CSV file: {csv_path}")
     with open(csv_path, 'w') as file:
         writer = csv.writer(file, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        writer.writerow(['ID', 'Area', 'Solidity', 'Max Width', 'Max Height'])
+        writer.writerow(['Name', 'Area', 'Center of Mass', 'Convex Hull Area', 'Convex Hull Vertices', 'Ellipse Angle', 'Ellipse Center', 'Ellipse Eccentricity', 'Ellipse Major Axis', 'Ellipse Minor Axis', 'Width', 'Height', 'Max Width', 'Max Height', 'In Bounds', 'Longest Path', 'Perimeter', 'Solidity'])
         for result in results:
-            writer.writerow([result.id, result.area, result.solidity, result.max_height, result.max_width])
-
-    # Excel
-    excel_path = f"{stem}.results.xlsx"
-    print(f"Writing Excel file: {excel_path}")
-    wb = load_workbook(excel_path) if isfile(excel_path) else Workbook()
-    sheet = wb.active
-    sheet.cell(row=1, column=1).value = 'filename'
-    sheet.cell(row=1, column=2).value = 'leaf_area'
-    sheet.cell(row=1, column=3).value = 'solidity'
-    sheet.cell(row=1, column=4).value = 'max_width'
-    sheet.cell(row=1, column=5).value = 'max_height'
-    for result in results:
-        sheet.append([result.id, result.area, result.solidity, result.max_height, result.max_width])
-    wb.save(excel_path)
+            writer.writerow([result.name, result.area, result.center_of_mass, result.convex_hull_area, result.convex_hull_vertices, result.ellipse_angle, result.ellipse_center, result.ellipse_eccentricity, result.ellipse_major_axis, result.ellipse_minor_axis, result.width, result.height, result.max_width, result.max_height, result.in_bounds, result.longest_path, result.perimeter, result.solidity,])
